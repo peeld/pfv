@@ -1,5 +1,5 @@
 // PFV - Peel File Versions. The GUI is C++; the PFV library runs in the
-// embedded Python (fileversions/, called through pfv_app.py).
+// embedded Python (pfv-public/, called through pfv_app.py).
 //
 //   PFV [storage_path] [work_tree]   open work_tree (and that storage) at startup
 //   PFV --python-check               start Python, print what's loaded, exit

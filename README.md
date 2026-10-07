@@ -3,7 +3,7 @@
 | Folder | What |
 |---|---|
 | repo root, `src/` | **PFV** (Peel File Versions): C++ Qt GUI with embedded Python |
-| `fileversions/` | the PFV Python library and CLI; also the app's Python scripts folder (its own git repo for now) |
+| `pfv-public/` | the PFV Python library and CLI; also the app's Python scripts folder (its own git repo for now) |
 | `tracking/` | Fleet PM tool: Django server + `pmtool` client (separate, not part of the app build) |
 | `core/` | shared submodule: build system (`pd`), `PeelApp.cmake`, shared C++ |
 | `web-license/` | licensing submodule (`peel_add_app(... LICENSE)`) |
@@ -15,12 +15,12 @@ Open work is in [`TODO.md`](TODO.md).
 A versioning tool for large binary files: a workspace (a local folder) is
 linked to one or more repos (a local folder or S3), files are checked out,
 edited and synced back as new versions. The library is documented in
-`fileversions/docs/DOCS.md`, the app in `fileversions/docs/GUI.md`.
+`pfv-public/docs/DOCS.md`, the app in `pfv-public/docs/GUI.md`.
 
 The GUI is C++ (`src/`). All PFV work happens in the embedded Python, through
-one facade, `fileversions/pfv_app.py` (`dispatch(name, json) -> json`), called
+one facade, `pfv-public/pfv_app.py` (`dispatch(name, json) -> json`), called
 from `src/pfvBackend.cpp` on background threads. Architecture and how to add
-a feature: `fileversions/docs/DEVELOPMENT.md`.
+a feature: `pfv-public/docs/DEVELOPMENT.md`.
 
 The app is built like every app on `core`'s build system: `app.json` +
 `build.py` + `core/cmake/PeelApp.cmake`, with

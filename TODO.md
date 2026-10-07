@@ -5,7 +5,7 @@ the date) when they land.
 
 ## Before the first commit
 
-- [ ] **Decide how `fileversions/` is tracked.** It's a separate local git
+- [ ] **Decide how `pfv-public/` is tracked.** It's a separate local git
   repo (one commit, no remote) with uncommitted changes, including the
   2026-10-05 fixes and `pfv_app.py` / `pfv_startup.py`. The top-level repo
   can't build from a fresh clone until this is settled. Options: make it a
@@ -31,7 +31,6 @@ Only the repo view and history have been checked in the running app.
 - [ ] Workspace view: untracked files, right-click → Commit as new file.
 - [ ] Script Editor: `pfvgui.mainWindow()`, `pfv_app.dispatch(...)`.
 - [ ] S3 against a real bucket: env/profile credentials, typed keys.
-- [ ] Then delete the old PySide GUI (`fileversions/pfv_gui_*.py`).
 
 ## Build and release
 
@@ -47,8 +46,8 @@ Only the repo view and history have been checked in the running app.
   license is stored under the name), and create product `pfv` on the files
   API for `build.py release`.
 - [ ] Don't ship stray files from the scripts folder: `foo/` (test data),
-  `docs/`, `demo_setup.py`, `localtest.py`, the old `pfv_gui_*.py`. E.g. move
-  them out of `fileversions/`, or give `peel_add_app` an exclude list.
+  `docs/`, `demo_setup.py`, `localtest.py`. E.g. move
+  them out of `pfv-public/`, or give `peel_add_app` an exclude list.
 - [ ] Windows version resource on `PFV.exe` (core's list, BUILD_MIGRATION §0).
 
 ## PFV library and backend
@@ -85,3 +84,4 @@ Only the repo view and history have been checked in the running app.
 - 2026-10-05: staged scripts folder skips hidden entries (core).
 - 2026-10-06: app.json `python.packages` (core), boto3 for S3.
 - 2026-10-06: docs updated for the C++ app.
+- 2026-10-06: deleted the old PySide GUI (`pfv_gui_*.py`).

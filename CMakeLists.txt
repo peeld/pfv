@@ -9,9 +9,9 @@ include(${CMAKE_CURRENT_SOURCE_DIR}/core/cmake/PeelApp.cmake)
 find_package(Qt6 REQUIRED COMPONENTS Widgets)
 qt_standard_project_setup()
 
-# The GUI is C++; the PFV library (fileversions/) runs in the embedded Python
-# and is called through fileversions/pfv_app.py (src/pfvBackend.*).
-peel_add_app(PFV PYTHON PYTHON_SCRIPTS "${CMAKE_CURRENT_SOURCE_DIR}/fileversions"
+# The GUI is C++; the PFV library (pfv-public/) runs in the embedded Python
+# and is called through pfv-public/pfv_app.py (src/pfvBackend.*).
+peel_add_app(PFV PYTHON PYTHON_SCRIPTS "${CMAKE_CURRENT_SOURCE_DIR}/pfv-public"
              SENTRY LICENSE SCRIPT_EDITOR SOURCES
     src/main.cpp
     src/appPython.h

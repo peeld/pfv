@@ -1,0 +1,19 @@
+# Secrets - never commit (see core/python/pd/credentials.py)
+credentials.json
+licenseConfig.h
+
+# Generated per machine by `python build.py presets` (see core/python/pd/project.py)
+CMakeUserPresets.json
+
+# Build output
+build/
+dist/
+vendor/
+
+__pycache__/
+*.pyc
+venv/
+.venv/
+.vs/
+.idea/
+.vscode/
