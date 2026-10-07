@@ -16,7 +16,8 @@ import unittest
 from pathlib import Path
 from unittest import mock
 
-sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "pfv-public"))
+ROOT = Path(__file__).resolve().parents[1]
+sys.path[:0] = [str(ROOT / "python"), str(ROOT / "pfv-public")]  # as in the app
 
 import pfv_app  # noqa: E402
 import pfv_config  # noqa: E402

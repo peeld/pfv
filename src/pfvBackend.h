@@ -1,6 +1,6 @@
 #pragma once
 
-// The C++ side of pfv-public/pfv_app.py: every PFV operation the GUI does
+// The C++ side of python/pfv_app.py: every PFV operation the GUI does
 // goes through pfv_app.dispatch(name, args_json) in the embedded Python, with
 // JSON in and out, so C++ never holds a Python object.
 //

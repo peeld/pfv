@@ -38,10 +38,16 @@ C++ Qt GUI (src/, repo root)                      embedded CPython (qtbld 3.14)
   the `pfvgui` module, starts Python, runs `pfv_startup.install()`) →
   `MainWindow::startup()`. Shutdown: window deleted (waits for the pool) →
   `appPythonStop()` → Sentry stopped.
-- **Build:** `peel_add_app(PFV PYTHON PYTHON_SCRIPTS pfv-public SENTRY LICENSE
-  SCRIPT_EDITOR ...)` in the root `CMakeLists.txt`; see
-  `core/docs/todo/BUILD_MIGRATION.md`. `pfv-public/` is the scripts folder,
-  so the CLI and the app run the same modules.
+- **Build:** `peel_add_app(PFV PYTHON PYTHON_SCRIPTS python pfv-public
+  PYTHON_SCRIPTS_EXCLUDE ... SENTRY LICENSE SCRIPT_EDITOR ...)` in the root
+  `CMakeLists.txt`; see `core/docs/todo/BUILD_MIGRATION.md`. Both folders go
+  on `sys.path` (`python/` first) and are staged together into one
+  `scripts/`, so the CLI and the app run the same library modules.
+  `python/` holds the app-only Python; `pfv-public/` is the public library
+  (a submodule), and nothing in it may import `pfv_app` or `pfvgui`. A name
+  in both folders fails configure. `PYTHON_SCRIPTS_EXCLUDE` keeps the
+  library's dev files (`README.md`, `demo_setup.py`, `localtest.py`) out of
+  the stage.
 
 ### Files
 
@@ -53,8 +59,9 @@ C++ Qt GUI (src/, repo root)                      embedded CPython (qtbld 3.14)
 | `src/dialogs.*` | Checkout, Delete, Rename, Undelete, NewFolder (workspace / local repo), S3 |
 | `src/pfvBackend.*` | the C++ → `pfv_app` bridge |
 | `src/appPython.*`, `src/bindings.*` | Python startup, the shiboken `pfvgui` module |
-| `pfv-public/pfv_app.py` | backend facade, the command table `_COMMANDS` |
-| `pfv-public/pfv_startup.py` | `install()` at startup, `check()` for `--python-check` |
+| `python/pfv_app.py` | backend facade, the command table `_COMMANDS` |
+| `python/pfv_startup.py` | `install()` at startup, `check()` for `--python-check` |
+| `tests/test_pfv_app.py` | `pfv_app.dispatch()` tests |
 
 ## Adding a Feature
 
@@ -70,7 +77,8 @@ def lock(vdir: str, reason: str = "") -> dict:
     return {"locked": True}
 ```
 
-Test it without the GUI, with any Python that has the PFV modules:
+Test it without the GUI, with `python/` and `pfv-public/` on `sys.path`
+(add a case to `tests/test_pfv_app.py` too):
 
 ```python
 import json, pfv_app
@@ -118,6 +126,14 @@ details private, and forward-declare types the header doesn't need.
 3. If it needs a third-party package, add it to `python.packages` in the
    repo root's `app.json` (pinned), so the build installs and ships it.
 
+### Python packages in the app
+
+The embedded Python only has what `app.json` lists under `python.packages`
+(installed by `build.py`): currently `boto3`. `cryptography`, `redis` and the
+stub backends' packages aren't included, so credential profiles and the Redis
+state backend don't work in the app yet. Add a pinned entry there to include
+one.
+
 The only required contract: `write_bytes(key, data)` followed by `read_bytes(key)` returns the same bytes.
 
 ## Adding a State Backend
@@ -130,10 +146,9 @@ The only required contract: `write_bytes(key, data)` followed by `read_bytes(key
 
 ## Testing
 
-- **Backend:** drive `pfv_app.dispatch()` from plain Python against a temp
-  workspace and local repo (see the snippet above; `init_workspace`,
-  `open_workspace`, `connect`, `commit_new`, `checkout`, `sync_plan`,
-  `checkin`, ...). No Qt needed.
+- **Backend:** `python -m unittest discover tests` from the repo root (any
+  Python 3.10+, no Qt) drives `pfv_app.dispatch()` against a temp workspace,
+  a local repo and a temp `~/.pfvconfig`.
 - **Embedded Python and packaging:** `python build.py run -- --python-check`
   and, after `python build.py stage`, `python build.py run --staged --
   --python-check`. It fails if `pfv_app` can't answer, `install()` didn't run,
@@ -141,7 +156,6 @@ The only required contract: `write_bytes(key, data)` followed by `read_bytes(key
 - **GUI:** `demo_setup.py` creates a test repository; open it with
   `python build.py run -- <repo> <work tree>`.
 
-There are no automated tests yet (see `TODO.md`).
 
 ## Debugging
 

@@ -3,7 +3,10 @@
 | Folder | What |
 |---|---|
 | repo root, `src/` | **PFV** (Peel File Versions): C++ Qt GUI with embedded Python |
-| `pfv-public/` | the PFV Python library and CLI; also the app's Python scripts folder (its own git repo for now) |
+| `python/` | the app's own Python: `pfv_app.py` (the backend the GUI calls), `pfv_startup.py` |
+| `pfv-public/` | the PFV Python library and CLI (public submodule) |
+| `docs/` | private docs: the app, its build, planning |
+| `tests/` | `pfv_app` tests: `python -m unittest discover tests` |
 | `tracking/` | Fleet PM tool: Django server + `pmtool` client (separate, not part of the app build) |
 | `core/` | shared submodule: build system (`pd`), `PeelApp.cmake`, shared C++ |
 | `web-license/` | licensing submodule (`peel_add_app(... LICENSE)`) |
@@ -15,12 +18,18 @@ Open work is in [`TODO.md`](TODO.md).
 A versioning tool for large binary files: a workspace (a local folder) is
 linked to one or more repos (a local folder or S3), files are checked out,
 edited and synced back as new versions. The library is documented in
-`pfv-public/docs/DOCS.md`, the app in `pfv-public/docs/GUI.md`.
+`pfv-public/README.md`, the app in `docs/GUI.md`.
 
 The GUI is C++ (`src/`). All PFV work happens in the embedded Python, through
-one facade, `pfv-public/pfv_app.py` (`dispatch(name, json) -> json`), called
+one facade, `python/pfv_app.py` (`dispatch(name, json) -> json`), called
 from `src/pfvBackend.cpp` on background threads. Architecture and how to add
-a feature: `pfv-public/docs/DEVELOPMENT.md`.
+a feature: `docs/DEVELOPMENT.md`.
+
+`python/` and `pfv-public/` are both on the embedded Python's `sys.path`
+(`python/` first) and are staged together into one `scripts/` folder, so a
+file name must not be in both (configure fails if it is). Code that only
+makes sense inside the app goes in `python/`; the library, and docs on using
+and extending it, go in `pfv-public/`, which is public.
 
 The app is built like every app on `core`'s build system: `app.json` +
 `build.py` + `core/cmake/PeelApp.cmake`, with
@@ -49,7 +58,7 @@ python build.py run                       # [-- <storage> <work tree>]
 python build.py run -- --python-check     # embedded Python self-check
 python build.py stage                     # self-contained app folder in build/<preset>/stage
 python build.py run --staged -- --python-check
-python build.py package                   # NSIS installer (not tried yet for PFV)
+python build.py package                   # NSIS installer + portable zip, both verified
 ```
 
 `python build.py list` shows the presets: `qtbld-6.11.1` (default),

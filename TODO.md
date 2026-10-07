@@ -3,17 +3,15 @@
 Open work on PFV and its build, as of 2026-10-06. Move items to "Done" (with
 the date) when they land.
 
-## Publish
+## Commit the move of `pfv_app.py` / `pfv_startup.py` to `python/`
 
-- [ ] **Push, so a fresh clone builds.** `pfv-public` `main` is 1 commit
-  ahead of `origin` (the commit this repo points at), and this repo's
-  `main` has never been pushed (`origin/main` is gone).
-- [ ] Commit and push core's `PYTHON_SCRIPTS_EXCLUDE` change
-  (`cmake/PeelApp.cmake`, `build-migration`), then bump `core` here
-  together with the `CMakeLists.txt` that uses it.
-- [ ] Commit `pfv-public`'s `storage_kwargs()` profile fix and bump it here.
-- [ ] `pfv-public` has an untracked `docs/` and no `.gitignore`
-  (`__pycache__/` shows up): commit or ignore.
+- [ ] core (`build-migration`): `PYTHON_SCRIPTS` as a list,
+  `PEEL_APP_PYTHON_DIRS`, the name-clash and empty-folder checks, `doctor`
+  checking every submodule, docs. Push, then bump `core` here.
+- [ ] pfv-public: the two files removed, README rows and the app-packages
+  paragraph removed, `demo_setup.py` points at the CLI. Push, then bump it here.
+- [ ] This repo: `python/`, `CMakeLists.txt`, `src/` comments, `tests/`,
+  `README.md`, `docs/`, `TODO.md`, and both submodule bumps, in one commit.
 
 ## Test the C++ GUI by hand
 
@@ -33,15 +31,14 @@ Only the repo view and history have been checked in the running app.
 
 - [ ] `-debug` preset: build, `--python-check`, and check whether boto3
   (pure Python) works under `python_d.exe`.
-- [ ] `python build.py package`: installer builds and passes its silent
-  install test.
 - [ ] Sentry: create project `pfv`, put its DSN in app.json `sentry.dsn`,
   test with `--sentry-check`, then add `--sentry-check` to `package.verify`.
 - [ ] Licensing: set up a `pfv` license product and write `licenseConfig.h`;
   test `--license-check`, then add it to `package.verify`.
 - [ ] Confirm the app name `PFV` and slug `pfv` before the first release (the
   license is stored under the name), and create product `pfv` on the files
-  API for `build.py release`.
+  API for `build.py release`. `release --dry-run` stops at the
+  `PEEL_CREDENTIALS` check, before any build.
 - [ ] Windows version resource on `PFV.exe` (core's list, BUILD_MIGRATION §0).
 
 ## PFV library and backend
@@ -82,3 +79,7 @@ Only the repo view and history have been checked in the running app.
   `pfv_app.dispatch()` (`python -m unittest discover tests`).
 - 2026-10-06: `peel_add_app(... PYTHON_SCRIPTS_EXCLUDE ...)` (core); `docs/`,
   `demo_setup.py`, `localtest.py` no longer staged.
+- 2026-10-06: `python build.py package`: installer and portable zip build and
+  pass their verify (install, `--python-check`, uninstall).
+- 2026-10-06: `pfv_app.py` and `pfv_startup.py` moved out of the public
+  library into `python/`; core's `PYTHON_SCRIPTS` takes several folders.

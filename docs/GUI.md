@@ -220,7 +220,7 @@ json.loads(pfv_app.dispatch("history", json.dumps({"vdir": "scene.ma"})))
 ## Architecture
 
 See `DEVELOPMENT.md`. In short: C++ widgets (`src/`) call
-`pfv-public/pfv_app.py`'s `dispatch(name, json)` through `src/pfvBackend.cpp`;
+`python/pfv_app.py`'s `dispatch(name, json)` through `src/pfvBackend.cpp`;
 `pfv_app` calls the PFV library; storage I/O goes through
 `pfv_storage.StorageBackend`, checkout tracking through
 `pfv_state.StateBackend`.
