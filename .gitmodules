@@ -1,0 +1,9 @@
+[submodule "pfv-public"]
+	path = pfv-public
+	url = git@github.com:peeld/pfv-public.git
+[submodule "core"]
+	path = core
+	url = git@github.com:peeld/core.git
+[submodule "web-license"]
+	path = web-license
+	url = git@github.com:peeld/web-license.git
