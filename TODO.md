@@ -3,20 +3,17 @@
 Open work on PFV and its build, as of 2026-10-06. Move items to "Done" (with
 the date) when they land.
 
-## Before the first commit
+## Publish
 
-- [ ] **Decide how `pfv-public/` is tracked.** It's a separate local git
-  repo (one commit, no remote) with uncommitted changes, including the
-  2026-10-05 fixes and `pfv_app.py` / `pfv_startup.py`. The top-level repo
-  can't build from a fresh clone until this is settled. Options: make it a
-  submodule (it needs a remote), or merge it into this repo.
-- [ ] **Commit the `core` changes** on core's `build-migration` branch, then
-  bump the `core` submodule here: hidden files left out of the staged scripts
-  folder, app.json `python.packages`, and the BUILD_MIGRATION /
-  `build_migration/pfv.md` docs.
-- [ ] Commit this repo: app files (`app.json`, `build.py`, `CMakeLists.txt`,
-  `src/`, `README.md`, `TODO.md`, `.gitignore`), `web-license` submodule.
-  `tracking/` is untracked too: commit it separately, or leave it out.
+- [ ] **Push, so a fresh clone builds.** `pfv-public` `main` is 1 commit
+  ahead of `origin` (the commit this repo points at), and this repo's
+  `main` has never been pushed (`origin/main` is gone).
+- [ ] Commit and push core's `PYTHON_SCRIPTS_EXCLUDE` change
+  (`cmake/PeelApp.cmake`, `build-migration`), then bump `core` here
+  together with the `CMakeLists.txt` that uses it.
+- [ ] Commit `pfv-public`'s `storage_kwargs()` profile fix and bump it here.
+- [ ] `pfv-public` has an untracked `docs/` and no `.gitignore`
+  (`__pycache__/` shows up): commit or ignore.
 
 ## Test the C++ GUI by hand
 
@@ -45,9 +42,6 @@ Only the repo view and history have been checked in the running app.
 - [ ] Confirm the app name `PFV` and slug `pfv` before the first release (the
   license is stored under the name), and create product `pfv` on the files
   API for `build.py release`.
-- [ ] Don't ship stray files from the scripts folder: `foo/` (test data),
-  `docs/`, `demo_setup.py`, `localtest.py`. E.g. move
-  them out of `pfv-public/`, or give `peel_add_app` an exclude list.
 - [ ] Windows version resource on `PFV.exe` (core's list, BUILD_MIGRATION §0).
 
 ## PFV library and backend
@@ -56,14 +50,11 @@ Only the repo view and history have been checked in the running app.
   `cryptography` (not in app.json `python.packages`) and asks for its
   passphrase with `getpass` on a console the GUI doesn't have. Needs a
   passphrase callback the GUI can answer with a dialog, plus the package.
-- [ ] The S3 dialog's *AWS profile* is saved as `profile` in `session.json`,
-  but `PFVSession.storage_kwargs()` only reads back `cred_profile`, `region`
-  and `endpoint_url`, so the profile is lost when the workspace is reopened.
 - [ ] Checkout records written before the `make_record` fix (2026-10-05) have
   an absolute path as the vdir. Either a one-off migration in `pfv_state`, or
-  tell users to check those files out again.
-- [ ] Automated tests for `pfv_app.dispatch()` (temp workspace + local repo;
-  the smoke test from the port is a starting point).
+  tell users to check those files out again. A migration would have to guess:
+  the old code resolved the vdir against an unknown cwd, so the only way back
+  is matching the path's tail against the vdirs in storage.
 - [ ] The Redis state backend needs `redis` in `python.packages` if the app
   should support it.
 
@@ -85,3 +76,9 @@ Only the repo view and history have been checked in the running app.
 - 2026-10-06: app.json `python.packages` (core), boto3 for S3.
 - 2026-10-06: docs updated for the C++ app.
 - 2026-10-06: deleted the old PySide GUI (`pfv_gui_*.py`).
+- 2026-10-06: S3 *AWS profile* survives reopening the workspace
+  (`storage_kwargs()` reads back `profile`).
+- 2026-10-06: `tests/test_pfv_app.py`, unittest suite for
+  `pfv_app.dispatch()` (`python -m unittest discover tests`).
+- 2026-10-06: `peel_add_app(... PYTHON_SCRIPTS_EXCLUDE ...)` (core); `docs/`,
+  `demo_setup.py`, `localtest.py` no longer staged.

@@ -11,7 +11,9 @@ qt_standard_project_setup()
 
 # The GUI is C++; the PFV library (pfv-public/) runs in the embedded Python
 # and is called through pfv-public/pfv_app.py (src/pfvBackend.*).
+# Dev-only files in pfv-public stay out of the staged app.
 peel_add_app(PFV PYTHON PYTHON_SCRIPTS "${CMAKE_CURRENT_SOURCE_DIR}/pfv-public"
+             PYTHON_SCRIPTS_EXCLUDE docs demo_setup.py localtest.py
              SENTRY LICENSE SCRIPT_EDITOR SOURCES
     src/main.cpp
     src/appPython.h
